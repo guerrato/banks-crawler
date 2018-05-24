@@ -35,5 +35,24 @@ def listBanks(countryLink):
 
     return banks
 
+def listBankCities(banksLink):
+    cities = dict()
+    response = requests.get(banksLink)
+    html = response.text
+    soup = bs4.BeautifulSoup(html, "html.parser")
+
+    bankLinks = soup.body.find(class_='wrap').find(class_='content').find(class_='mid-col').find(class_='clearfix').find_all(class_='select-list-inner')[2].find('form').find('label').find('select').find_all('option')
+
+    for c in bankLinks:
+        if (c.get('value') != ''):
+            cities[c.get_text()] = c.get('value')
+
+    return cities
+
 countries = listCountries(baseUrl)
-print(listBanks(countries['Afghanistan']))
+
+banks = listBanks(countries['Afghanistan'])
+
+cities = listBankCities(banks['AFGHAN UNITED BANK'])
+
+print(cities)
