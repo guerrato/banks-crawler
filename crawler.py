@@ -69,11 +69,17 @@ def branchData(branchLink):
     html = response.text
     soup = bs4.BeautifulSoup(html, "html.parser")
 
-    branchPage = soup.body.find(class_='wrap').find(class_='content').find(class_='mid-col').find('div', class_='clearfix').find(class_='data-disp').find('table')
+    table = soup.body.find(class_='wrap').find(class_='content').find(class_='mid-col').find('div', class_='clearfix').find(class_='data-disp').find('table')
 
-    # branchData = branchPage.find_all(class_='tr')
+    lines = table.find_all('tr')
 
-    return branchPage
+    data['bank'] = lines[0].find('p', class_='ifDta').get_text()
+    data['country'] = lines[1].find('p', class_='ifDta').get_text()
+    data['city'] = lines[2].find('p', class_='ifDta').get_text()
+    data['swift'] = lines[3].find('p', class_='ifDta').get_text()
+    data['address'] = lines[4].find('p', class_='ifDta').get_text()
+
+    return data
 
 countries = listCountries(baseUrl)
 
