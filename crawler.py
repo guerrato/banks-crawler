@@ -49,10 +49,40 @@ def listBankCities(banksLink):
 
     return cities
 
+def listBankBranches(citiesLink):
+    branches = dict()
+    response = requests.get(citiesLink)
+    html = response.text
+    soup = bs4.BeautifulSoup(html, "html.parser")
+
+    citiesLink = soup.body.find(class_='wrap').find(class_='content').find(class_='mid-col').find(class_='clearfix').find_all(class_='select-list-inner')[3].find('form').find('label').find('select').find_all('option')
+
+    for c in citiesLink:
+        if (c.get('value') != ''):
+            branches[c.get_text()] = c.get('value')
+
+    return branches
+
+def branchData(branchLink):
+    data = dict()
+    response = requests.get(branchLink)
+    html = response.text
+    soup = bs4.BeautifulSoup(html, "html.parser")
+
+    branchPage = soup.body.find(class_='wrap').find(class_='content').find(class_='mid-col').find('div', class_='clearfix').find(class_='data-disp').find('table')
+
+    # branchData = branchPage.find_all(class_='tr')
+
+    return branchPage
+
 countries = listCountries(baseUrl)
 
-banks = listBanks(countries['Afghanistan'])
+banks = listBanks(countries['Brazil'])
 
-cities = listBankCities(banks['AFGHAN UNITED BANK'])
+cities = listBankCities(banks['BANCO ITAUBANK S A'])
 
-print(cities)
+branches = listBankBranches(cities['SAO PAULO'])
+
+branchData = branchData(branches['Sao Paulo Branch'])
+
+print(branchData)
