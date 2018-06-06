@@ -73,11 +73,9 @@ def branchData(branchLink):
 
     lines = table.find_all('tr')
 
-    data['bank'] = lines[0].find('p', class_='ifDta').get_text()
-    data['country'] = lines[1].find('p', class_='ifDta').get_text()
-    data['city'] = lines[2].find('p', class_='ifDta').get_text()
-    data['swift'] = lines[3].find('p', class_='ifDta').get_text()
-    data['address'] = lines[4].find('p', class_='ifDta').get_text()
+    for l in lines:
+        key = l.find('p', class_='ifTit').get_text().replace(':', '').strip().lower()
+        data[key] = l.find('p', class_='ifDta').get_text()
 
     return data
 
