@@ -63,7 +63,7 @@ def listBankBranches(citiesLink):
 
     return branches
 
-def branchData(branchLink):
+def listBranchData(branchLink):
     data = dict()
     response = requests.get(branchLink)
     html = response.text
@@ -87,6 +87,9 @@ cities = listBankCities(banks['BANCO ITAUBANK S A'])
 
 branches = listBankBranches(cities['SAO PAULO'])
 
-branchData = branchData(branches['Sao Paulo Branch'])
+branchData = []
+
+for key, value in branches.items():
+    branchData.append(listBranchData(value))
 
 print(branchData)
