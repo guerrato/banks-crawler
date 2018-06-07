@@ -90,14 +90,14 @@ if choice == 'y':
 
     for country in countries:
         print('Started: ' + country['name'])
-        banks = listBanks(country['url'])
+        # banks = listBanks(country['url'])
         # for bank in banks:
         #     for keyCity, valueCity in listBankCities(valueBank).items():
         #         for keyBranches, valueBranches in listBankBranches(valueCity).items():
         #             branchData.append(listBranchData(valueBranches))
         # print(country['name'] + ' was crawled!')
         
-exit()
+# exit()
     # banks = listBanks(countries['Brazil'])
 # generateStatusFile(countries, 'countries')
 
@@ -105,7 +105,7 @@ exit()
 
 # branches = listBankBranches(cities['SAO PAULO'])
 
-branchData = []
+# branchData = []
 
 # for key, value in branches.items():
 #     branchData.append(listBranchData(value))
