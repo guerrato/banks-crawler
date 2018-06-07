@@ -1,14 +1,13 @@
-# import urllib
-import time
-
 import bs4
+import json
+import time
 import requests
 
 baseUrl = 'https://banksifsccode.com/swift-codes/'
 countries = []
 
 def listCountries(url):
-    countries = dict()
+    countries = []
     response = requests.get(url)
     html = response.text
     soup = bs4.BeautifulSoup(html, "html.parser")
@@ -17,12 +16,12 @@ def listCountries(url):
 
     for c in countryLinks:
         if (c.a != None):
-            countries[c.a.get_text()] = c.a.get('href')
+            countries.append({'name': c.a.get_text(), 'url': c.a.get('href'), 'crawled': False})
     
     return countries
 
 def listBanks(countryLink):
-    banks = dict()
+    banks = []
     response = requests.get(countryLink)
     html = response.text
     soup = bs4.BeautifulSoup(html, "html.parser")
@@ -31,7 +30,7 @@ def listBanks(countryLink):
 
     for b in bankLinks:
         if (b.get('value') != ''):
-            banks[b.get_text()] = b.get('value')
+            banks.append({'name': b.get_text(), 'url': b.get('value'), 'crawled': False})
 
     return banks
 
@@ -79,17 +78,40 @@ def listBranchData(branchLink):
 
     return data
 
-countries = listCountries(baseUrl)
+def generateStatusFile(data, name):
+    with open((name + '.json'), mode='w', encoding='utf-8') as outfile:
+        json.dump(data, outfile, sort_keys=True, indent=4)
 
-banks = listBanks(countries['Brazil'])
+choice = input("Would you like crawl everything again? (y/N) ")
 
-cities = listBankCities(banks['BANCO ITAUBANK S A'])
+if choice == 'y':
+    countries = listCountries(baseUrl)
+    generateStatusFile(countries, 'countries')
 
-branches = listBankBranches(cities['SAO PAULO'])
+    for country in countries:
+        print('Started: ' + country['name'])
+        banks = listBanks(country['url'])
+        # for bank in banks:
+        #     for keyCity, valueCity in listBankCities(valueBank).items():
+        #         for keyBranches, valueBranches in listBankBranches(valueCity).items():
+        #             branchData.append(listBranchData(valueBranches))
+        # print(country['name'] + ' was crawled!')
+        
+exit()
+    # banks = listBanks(countries['Brazil'])
+# generateStatusFile(countries, 'countries')
+
+# cities = listBankCities(banks['BANCO ITAUBANK S A'])
+
+# branches = listBankBranches(cities['SAO PAULO'])
 
 branchData = []
 
-for key, value in branches.items():
-    branchData.append(listBranchData(value))
+# for key, value in branches.items():
+#     branchData.append(listBranchData(value))
 
-print(branchData)
+
+# with open('banks.json', mode='w', encoding='utf-8') as outfile:
+#     json.dump(branchData, outfile, sort_keys=True, indent=4)
+
+print('Done! Check the result in banks.json file!')
