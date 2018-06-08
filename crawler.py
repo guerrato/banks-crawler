@@ -78,9 +78,18 @@ def listBranchData(branchLink):
 
     return data
 
-def generateStatusFile(data, name):
-    with open((name + '.json'), mode='w', encoding='utf-8') as outfile:
-        json.dump(data, outfile, sort_keys=True, indent=4)
+def generateStatusFile(data, name, append = False, beautify = True):
+    mode = 'w'
+    indent = 4
+
+    if append == True:
+        mode = 'a'
+    
+    if beautify == False:
+        indent = None
+
+    with open((name + '.json'), mode=mode, encoding='utf-8') as outfile:
+        json.dump(data, outfile, indent=indent)
 
 choice = input("Would you like crawl everything again? (y/N) ")
 
@@ -90,8 +99,12 @@ if choice == 'y':
 
     for country in countries:
         print('Started: ' + country['name'])
-        # banks = listBanks(country['url'])
+        banks = listBanks(country['url'])
+        generateStatusFile(banks, 'banks', append = True, beautify = False)
+
         # for bank in banks:
+
+            
         #     for keyCity, valueCity in listBankCities(valueBank).items():
         #         for keyBranches, valueBranches in listBankBranches(valueCity).items():
         #             branchData.append(listBranchData(valueBranches))
